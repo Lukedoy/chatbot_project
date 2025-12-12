@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pkl
+*.joblib
+models/
+venv/
+env/
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
