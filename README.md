@@ -12,11 +12,11 @@ This project implements an end-to-end NLP pipeline for customer support automati
 - **Dataset**: Banking77 (13,083 customer queries across 77 intents)
 - **Models**: Logistic Regression, Random Forest, XGBoost, LSTM
 - **Application**: Flask web app with real-time intent classification
-- **Grade Target**: Comprehensive implementation covering all grading criteria
+
 
 ## 🎯 Features
 
-### Data Processing (Grade-3 & 4)
+### Data Processing 
 - ✅ Real dataset (Banking77 from Hugging Face)
 - ✅ Comprehensive EDA with visualizations
 - ✅ Text cleaning & preprocessing pipeline
@@ -24,7 +24,7 @@ This project implements an end-to-end NLP pipeline for customer support automati
 - ✅ Tokenization & vectorization (TF-IDF)
 - ✅ Train/validation/test split (70/15/15)
 
-### Preprocessing (Grade-3 & 4)
+### Preprocessing 
 - ✅ Text cleaning (lowercase, punctuation removal, URL/email removal)
 - ✅ Tokenization using NLTK
 - ✅ Stopword removal
@@ -33,21 +33,21 @@ This project implements an end-to-end NLP pipeline for customer support automati
 - ✅ Unit tests for all preprocessing functions
 - ✅ Preprocessing visualization
 
-### Modeling (Grade-5)
+### Modeling 
 - ✅ 4 Models trained and compared:
   1. **Logistic Regression** - Fast baseline
   2. **Random Forest** - Ensemble method
   3. **XGBoost** - Gradient boosting
   4. **LSTM** - Deep learning with embeddings
 
-### Evaluation (Grade-4)
+### Evaluation 
 - ✅ Multiple metrics: Accuracy, Precision, Recall, F1-Score, AUC
 - ✅ Confusion matrices
 - ✅ Model comparison visualizations
 - ✅ Performance benchmarking
 - ✅ Inference time analysis
 
-### Application (Grade-5)
+### Application 
 - ✅ Flask web application
 - ✅ Real-time chatbot interface
 - ✅ Intent classification with confidence scores
@@ -60,9 +60,6 @@ This project implements an end-to-end NLP pipeline for customer support automati
 ### 1. Installation
 
 ```bash
-# Clone repository
-git clone <your-repo-url>
-cd chatbot_project
 
 # Create virtual environment
 python -m venv venv
@@ -259,25 +256,11 @@ User Query → Preprocessing → Vectorization → Model → Intent + Confidence
 
 ## 📝 Grading Criteria Coverage
 
-### Grade-3 Requirements ✅
-- [x] Real dataset loaded and processed
-- [x] Preprocessing pipeline implemented
-- [x] 1 model trained successfully
-- [x] Model evaluated on test data
-- [x] Application packaged and deployable
 
-### Grade-4 Requirements ✅
-- [x] Exploratory Data Analysis with visualizations
-- [x] Unit tests for preprocessing
-- [x] Preprocessing visualizations
-- [x] Complex benchmarking with multiple metrics
 
-### Grade-5 Requirements ✅
-- [x] 4 models trained and compared
-- [x] Comprehensive conclusion
-- [x] Model explanation provided
-- [x] Limitations documented
-- [x] Future development opportunities outlined
+
+
+
 
 ## 🤝 Contributing
 
@@ -285,12 +268,12 @@ This is an academic project. For improvements or suggestions, please create an i
 
 ## 📄 License
 
-MIT License - feel free to use for educational purposes.
+Feel free to use for educational purposes.
 
 ## 👨‍💻 Author
 
-[Your Name]
-NLP Class Project - [Year]
+[Bhone Myat Kyaw Thu]
+NLP Class Project - [2025 Autumn]
 
 ## 🙏 Acknowledgments
 
