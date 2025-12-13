@@ -5,8 +5,13 @@ Grade-4: Unit testing for preprocessing functions
 
 import unittest
 import sys
-sys.path.append('../src')
-from preprocessor import TextPreprocessor, TextVectorizer
+import os
+
+# Add parent directory to path to import from src
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+
+from src.preprocessor import TextPreprocessor, TextVectorizer
 import numpy as np
 
 

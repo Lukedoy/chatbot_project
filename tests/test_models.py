@@ -6,13 +6,17 @@ Grade-4: Comprehensive model testing
 
 import unittest
 import sys
+import os
 import numpy as np
 import pandas as pd
 from sklearn.datasets import make_classification
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-sys.path.append('../src')
-from models import (
+# Add parent directory to path to import from src
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+
+from src.models import (
     LogisticRegressionModel,
     RandomForestModel,
     XGBoostModel,

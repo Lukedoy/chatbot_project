@@ -7,8 +7,18 @@ Grade-5: Professional presentation with explanations
 
 from flask import Flask, render_template, request, jsonify
 import sys
-sys.path.append('../src')
-from preprocessor import TextPreprocessor, TextVectorizer
+import os
+
+# Add parent directory and src to path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+src_dir = os.path.join(parent_dir, 'src')
+
+sys.path.insert(0, parent_dir)
+sys.path.insert(0, src_dir)
+
+from src.preprocessor import TextPreprocessor, TextVectorizer
+from src.models import LogisticRegressionModel, RandomForestModel, XGBoostModel, LSTMModel
 import pickle
 import json
 import time
@@ -30,50 +40,85 @@ def load_model_artifacts():
     
     print("🚀 Loading model artifacts...")
     
-    # Load comparison results to find best model
-    with open('../models/model_comparison.csv', 'r') as f:
-        import pandas as pd
-        comparison_df = pd.read_csv(f, index_col=0)
-        best_model_name = comparison_df['f1_score'].idxmax()
-    
-    print(f"📦 Best model: {best_model_name}")
+    try:
+        # Check if comparison file exists
+        comparison_path = os.path.join(parent_dir, 'models', 'model_comparison.csv')
+        if not os.path.exists(comparison_path):
+            print("⚠️ model_comparison.csv not found. Using XGBoost as default.")
+            best_model_name = 'xgboost'
+        else:
+            # Load comparison results to find best model
+            import pandas as pd
+            comparison_df = pd.read_csv(comparison_path, index_col=0)
+            
+            # Convert to numeric
+            for col in comparison_df.columns:
+                comparison_df[col] = pd.to_numeric(comparison_df[col], errors='coerce')
+            
+            best_model_name = comparison_df['f1_score'].idxmax()
+        
+        print(f"📦 Best model: {best_model_name}")
+    except Exception as e:
+        print(f"⚠️ Error loading comparison: {e}")
+        print("Using XGBoost as default model")
+        best_model_name = 'xgboost'
     
     # Load preprocessor
     preprocessor = TextPreprocessor(remove_stopwords=True, lemmatize=True)
     
     # Load vectorizer
     vectorizer = TextVectorizer()
-    vectorizer.load('../models/vectorizer.pkl')
+    vectorizer_path = os.path.join(parent_dir, 'models', 'vectorizer.pkl')
+    vectorizer.load(vectorizer_path)
     
     # Load label encoder
-    with open('../models/label_encoder.pkl', 'rb') as f:
+    encoder_path = os.path.join(parent_dir, 'models', 'label_encoder.pkl')
+    with open(encoder_path, 'rb') as f:
         label_encoder = pickle.load(f)
     
     # Load the best model
-    if best_model_name == 'logistic':
-        from models import LogisticRegressionModel
-        model = LogisticRegressionModel()
-        model.load('../models/logistic_model.pkl')
-    elif best_model_name == 'random_forest':
-        from models import RandomForestModel
-        model = RandomForestModel()
-        model.load('../models/random_forest_model.pkl')
-    elif best_model_name == 'xgboost':
-        from models import XGBoostModel
-        model = XGBoostModel()
-        model.load('../models/xgboost_model.pkl')
-    elif best_model_name == 'lstm':
-        from models import LSTMModel
-        model = LSTMModel()
-        model.load('../models/lstm_model.h5', '../models/lstm_tokenizer.pkl')
-    
-    # Load model info
-    model_info = {
-        'name': best_model_name,
-        'accuracy': float(comparison_df.loc[best_model_name, 'accuracy']),
-        'f1_score': float(comparison_df.loc[best_model_name, 'f1_score']),
-        'num_classes': len(label_encoder.classes_)
-    }
+    try:
+        models_dir = os.path.join(parent_dir, 'models')
+        
+        if best_model_name == 'logistic':
+            model = LogisticRegressionModel()
+            model.load(os.path.join(models_dir, 'logistic_model.pkl'))
+        elif best_model_name == 'random_forest':
+            model = RandomForestModel()
+            model.load(os.path.join(models_dir, 'random_forest_model.pkl'))
+        elif best_model_name == 'xgboost':
+            model = XGBoostModel()
+            model.load(os.path.join(models_dir, 'xgboost_model.pkl'))
+        elif best_model_name == 'lstm':
+            model = LSTMModel()
+            model.load(
+                os.path.join(models_dir, 'lstm_model.h5'),
+                os.path.join(models_dir, 'lstm_tokenizer.pkl')
+            )
+        
+        # Load model info
+        if os.path.exists(comparison_path):
+            import pandas as pd
+            comparison_df = pd.read_csv(comparison_path, index_col=0)
+            for col in comparison_df.columns:
+                comparison_df[col] = pd.to_numeric(comparison_df[col], errors='coerce')
+            
+            model_info = {
+                'name': best_model_name,
+                'accuracy': float(comparison_df.loc[best_model_name, 'accuracy']),
+                'f1_score': float(comparison_df.loc[best_model_name, 'f1_score']),
+                'num_classes': len(label_encoder.classes_)
+            }
+        else:
+            model_info = {
+                'name': best_model_name,
+                'accuracy': 0.0,
+                'f1_score': 0.0,
+                'num_classes': len(label_encoder.classes_)
+            }
+    except Exception as e:
+        print(f"❌ Error loading model: {e}")
+        raise
     
     print("✅ Model loaded successfully!")
     print(f"   Model: {model_info['name']}")

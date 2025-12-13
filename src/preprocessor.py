@@ -18,6 +18,7 @@ from nltk.stem import WordNetLemmatizer
 import pickle
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 
 # Download required NLTK data
 try:
@@ -208,7 +209,7 @@ class TextVectorizer:
     Text vectorization using TF-IDF or Count Vectorizer.
     """
     
-    def __init__(self, method='tfidf', max_features=5000, ngram_range=(1, 2)):
+    def __init__(self, method='tfidf', max_features=5000, ngram_range=(1, 2), min_df=1, max_df=0.95):
         """
         Initialize vectorizer.
         
@@ -225,15 +226,15 @@ class TextVectorizer:
             self.vectorizer = TfidfVectorizer(
                 max_features=max_features,
                 ngram_range=ngram_range,
-                min_df=2,
-                max_df=0.95
+                min_df=min_df,
+                max_df=max_df
             )
         else:
             self.vectorizer = CountVectorizer(
                 max_features=max_features,
                 ngram_range=ngram_range,
-                min_df=2,
-                max_df=0.95
+                min_df=min_df,
+                max_df=max_df
             )
     
     def fit_transform(self, texts):
@@ -253,13 +254,15 @@ class TextVectorizer:
         with open(filepath, 'wb') as f:
             pickle.dump(self.vectorizer, f)
     
-    def load(self, filepath):
-        """Load vectorizer from file."""
-        with open(filepath, 'rb') as f:
+    def load(self, vectorizer_path):
+        import os
+        if not os.path.exists(vectorizer_path) or os.path.getsize(vectorizer_path) == 0:
+            raise ValueError(f"Vectorizer file '{vectorizer_path}' is missing or empty. Please retrain your model.")
+        with open(vectorizer_path, 'rb') as f:
             self.vectorizer = pickle.load(f)
 
 
-def prepare_data(data_path, test_size=0.15, val_size=0.15, random_state=42):
+def prepare_data(data_path, test_size=0.15, val_size=0.15, random_state=42, save_vectorizer=True, vectorizer_path='models/vectorizer.pkl'):
     """
     Load and prepare data for training.
     
@@ -299,7 +302,15 @@ def prepare_data(data_path, test_size=0.15, val_size=0.15, random_state=42):
     print(f"   Train: {len(train_df)} samples")
     print(f"   Val:   {len(val_df)} samples")
     print(f"   Test:  {len(test_df)} samples")
-    
+
+    # Fit and save vectorizer on train set processed_text
+    if save_vectorizer:
+        os.makedirs('models', exist_ok=True)
+        vectorizer = TextVectorizer(method='tfidf', max_features=5000)
+        vectorizer.fit_transform(train_df['processed_text'])
+        vectorizer.save(vectorizer_path)
+        print(f"💾 Vectorizer saved to {vectorizer_path}")
+
     return train_df, val_df, test_df
 
 

@@ -191,6 +191,10 @@ class ModelEvaluator:
         comparison_df = pd.DataFrame(self.results).T
         comparison_df = comparison_df[['accuracy', 'precision', 'recall', 'f1_score', 'auc', 'inference_time']]
         
+        # Convert to numeric (in case they were stored as strings)
+        for col in comparison_df.columns:
+            comparison_df[col] = pd.to_numeric(comparison_df[col], errors='coerce')
+        
         print("\n" + comparison_df.to_string())
         
         # Find best model

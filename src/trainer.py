@@ -9,6 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 import pickle
 import time
 import json
+import os
 from preprocessor import TextVectorizer
 from models import LogisticRegressionModel, RandomForestModel, XGBoostModel, LSTMModel
 
@@ -221,6 +222,9 @@ class ModelTrainer:
         """Save vectorizer and label encoder."""
         print("\n💾 Saving artifacts...")
         
+        # Ensure models directory exists
+        os.makedirs('../models', exist_ok=True)
+        
         # Save vectorizer
         self.vectorizer.save('../models/vectorizer.pkl')
         
@@ -271,4 +275,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
