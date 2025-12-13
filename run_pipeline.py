@@ -536,10 +536,9 @@ def main():
     print("🎉 PIPELINE COMPLETE!")
     print("="*80)
     print("\n📝 Next steps:")
-    print("   1. Review PROJECT_REPORT.txt for complete analysis")
-    print("   2. Check models/evaluation_report.txt for detailed metrics")
-    print("   3. Launch web app: cd app && python app.py")
-    print("   4. Access chatbot at: http://localhost:5000")
+    
+    print("   1. Launch web app: cd app && python app.py")
+    print("   2. Access chatbot at: http://localhost:5000")
     print("\n" + "="*80 + "\n")
 
 
